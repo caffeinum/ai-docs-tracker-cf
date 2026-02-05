@@ -8,38 +8,56 @@ Track AI coding agent traffic on your documentation site. Detects visits from Cl
 
 ## How It Works
 
-AI coding agents send a distinctive `Accept: text/markdown` header when fetching docs. This worker detects that pattern and logs/tracks the visit.
-
-**Detection signals:**
-- `Accept: text/markdown` (browsers never send this)
-- `Accept: text/plain` prioritized over `text/html`
+AI coding agents send `Accept: text/markdown` header when fetching docs - browsers never do this. This worker detects that pattern and streams events to Tinybird.
 
 ## Setup
 
 1. Click the Deploy button above
-2. After deployment, add a route in Cloudflare Dashboard:
+2. Set environment variables (see Configuration below)
+3. Add a route in Cloudflare Dashboard:
    - Go to Workers & Pages → ai-docs-tracker → Settings → Triggers
    - Add route: `docs.yourdomain.com/*`
 
 ## Configuration
 
-Set `TRACKER_ENDPOINT` environment variable to send events to your analytics backend:
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `TINYBIRD_TOKEN` | Yes | Your Tinybird admin token |
+| `TINYBIRD_DATASOURCE` | No | Datasource name (default: `ai_agent_events`) |
+| `TRACK_ALL` | No | Set to `true` to also track human visits |
 
-```
-TRACKER_ENDPOINT=https://your-api.com/track
-```
+Set via Cloudflare Dashboard: Workers → ai-docs-tracker → Settings → Variables
 
-Without this, events are logged to the console (visible in Workers logs).
+## Analytics Backend
 
-## Event Payload
+Deploy the Tinybird data sources and pipes from [ai-docs-analytics](https://github.com/caffeinum/ai-docs-analytics).
+
+## Detected Agents
+
+| Agent Type | Detection |
+|------------|-----------|
+| `claude-code` | UA contains "claude" or "anthropic" |
+| `cursor` | UA contains "cursor" |
+| `windsurf` | UA contains "windsurf" or "codeium" |
+| `opencode` | UA contains "opencode" |
+| `aider` | UA contains "aider" |
+| `continue` | UA contains "continue" |
+| `copilot` | UA contains "copilot" or "github" |
+| `unknown-ai` | Accept header detected, unknown UA |
+
+## Event Schema
 
 ```json
 {
+  "ts": "2024-01-15 10:30:00",
   "host": "docs.example.com",
   "path": "/api/authentication",
-  "accept": "text/plain;q=1.0, text/markdown;q=0.9, text/html;q=0.8",
+  "accept": "text/markdown, text/plain",
   "ua": "Mozilla/5.0...",
-  "ts": 1707123456789
+  "country": "US",
+  "city": "San Francisco",
+  "agent_type": "claude-code",
+  "is_ai": 1
 }
 ```
 
@@ -50,7 +68,7 @@ npm install
 npm run dev
 ```
 
-Test with:
+Test:
 ```bash
 curl -H "Accept: text/markdown" http://localhost:8787/docs/test
 ```
