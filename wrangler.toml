@@ -1,0 +1,13 @@
+name = "ai-docs-tracker"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Routes - configure these for your domain
+# Uncomment and modify after deployment:
+# routes = [
+#   { pattern = "docs.yourdomain.com/*", zone_name = "yourdomain.com" }
+# ]
+
+[vars]
+# Optional: Your tracking endpoint (defaults to console.log for testing)
+# TRACKER_ENDPOINT = "https://your-analytics-backend.com/track"

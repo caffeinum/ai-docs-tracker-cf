@@ -1,0 +1,27 @@
+{
+  "name": "ai-docs-tracker-cf",
+  "version": "1.0.0",
+  "description": "Track AI coding agent traffic on your docs (Claude Code, Cursor, OpenCode, etc.)",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "ai",
+    "docs",
+    "analytics",
+    "claude",
+    "cursor"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240129.0",
+    "typescript": "^5.3.3",
+    "wrangler": "^3.25.0"
+  }
+}
